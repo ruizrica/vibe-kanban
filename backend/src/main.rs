@@ -30,7 +30,8 @@ use app_state::AppState;
 use execution_monitor::execution_monitor;
 use models::{ApiResponse, Config};
 use routes::{
-    auth, config, filesystem, health, projects, stream, task_attempts, task_templates, tasks,
+    auth, config, filesystem, health, projects, stream, task_attempts, task_specs, task_templates,
+    tasks,
 };
 use services::PrMonitorService;
 
@@ -200,6 +201,7 @@ fn main() -> anyhow::Result<()> {
                         .merge(projects::projects_router())
                         .merge(tasks::tasks_router())
                         .merge(task_attempts::task_attempts_router())
+                        .merge(task_specs::router())
                         .merge(stream::stream_router())
                         .merge(task_templates::templates_router())
                         .merge(filesystem::filesystem_router())

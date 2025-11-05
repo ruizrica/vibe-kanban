@@ -5,5 +5,6 @@ pub mod health;
 pub mod projects;
 pub mod stream;
 pub mod task_attempts;
+pub mod task_specs;
 pub mod task_templates;
 pub mod tasks;
