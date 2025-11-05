@@ -260,8 +260,6 @@ impl TaskSpec {
             None
         };
 
-        let status_value = data.status.clone() as TaskSpecStatus;
-
         sqlx::query_as!(
             TaskSpec,
             r#"UPDATE task_specs
@@ -286,7 +284,7 @@ impl TaskSpec {
                 created_at as "created_at!: DateTime<Utc>",
                 updated_at as "updated_at!: DateTime<Utc>""#,
             id,
-            status_value,
+            data.status,
             data.approved_by,
             approved_at,
             data.rejection_reason
