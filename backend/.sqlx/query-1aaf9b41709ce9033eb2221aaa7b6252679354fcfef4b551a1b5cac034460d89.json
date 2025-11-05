@@ -1,0 +1,92 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE task_specs\n            SET overview = $2,\n                user_stories = $3,\n                scope = $4,\n                out_of_scope = $5,\n                deliverables = $6,\n                updated_at = CURRENT_TIMESTAMP\n            WHERE id = $1\n            RETURNING\n                id as \"id!: Uuid\",\n                task_id as \"task_id!: Uuid\",\n                overview,\n                user_stories,\n                scope,\n                out_of_scope,\n                deliverables,\n                status as \"status!: TaskSpecStatus\",\n                approved_by,\n                approved_at as \"approved_at: DateTime<Utc>\",\n                rejection_reason,\n                created_at as \"created_at!: DateTime<Utc>\",\n                updated_at as \"updated_at!: DateTime<Utc>\"",
+  "describe": {
+    "columns": [
+      {
+        "name": "id!: Uuid",
+        "ordinal": 0,
+        "type_info": "Blob"
+      },
+      {
+        "name": "task_id!: Uuid",
+        "ordinal": 1,
+        "type_info": "Blob"
+      },
+      {
+        "name": "overview",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "user_stories",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "scope",
+        "ordinal": 4,
+        "type_info": "Text"
+      },
+      {
+        "name": "out_of_scope",
+        "ordinal": 5,
+        "type_info": "Text"
+      },
+      {
+        "name": "deliverables",
+        "ordinal": 6,
+        "type_info": "Text"
+      },
+      {
+        "name": "status!: TaskSpecStatus",
+        "ordinal": 7,
+        "type_info": "Text"
+      },
+      {
+        "name": "approved_by",
+        "ordinal": 8,
+        "type_info": "Text"
+      },
+      {
+        "name": "approved_at: DateTime<Utc>",
+        "ordinal": 9,
+        "type_info": "Text"
+      },
+      {
+        "name": "rejection_reason",
+        "ordinal": 10,
+        "type_info": "Text"
+      },
+      {
+        "name": "created_at!: DateTime<Utc>",
+        "ordinal": 11,
+        "type_info": "Text"
+      },
+      {
+        "name": "updated_at!: DateTime<Utc>",
+        "ordinal": 12,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 6
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "1aaf9b41709ce9033eb2221aaa7b6252679354fcfef4b551a1b5cac034460d89"
+}
