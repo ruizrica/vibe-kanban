@@ -1,18 +1,36 @@
-import { GitCompare, MessageSquare } from 'lucide-react';
+import { GitCompare, MessageSquare, FileText } from 'lucide-react';
 import { useContext } from 'react';
 import { TaskDiffContext } from '@/components/context/taskDetailsContext.ts';
 
 type Props = {
-  activeTab: 'logs' | 'diffs';
-  setActiveTab: (tab: 'logs' | 'diffs') => void;
+  activeTab: 'logs' | 'diffs' | 'spec';
+  setActiveTab: (tab: 'logs' | 'diffs' | 'spec') => void;
   setUserSelectedTab: (tab: boolean) => void;
+  hasSpec?: boolean;
 };
 
-function TabNavigation({ activeTab, setActiveTab, setUserSelectedTab }: Props) {
+function TabNavigation({ activeTab, setActiveTab, setUserSelectedTab, hasSpec }: Props) {
   const { diff } = useContext(TaskDiffContext);
   return (
     <div className="border-b bg-muted/30">
       <div className="flex px-4">
+        {hasSpec && (
+          <button
+            onClick={() => {
+              console.log('Spec tab clicked - setting activeTab to spec');
+              setActiveTab('spec');
+              setUserSelectedTab(true);
+            }}
+            className={`flex items-center px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'spec'
+                ? 'border-primary text-primary bg-background'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50'
+            }`}
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Spec
+          </button>
+        )}
         <button
           onClick={() => {
             console.log('Logs tab clicked - setting activeTab to logs');

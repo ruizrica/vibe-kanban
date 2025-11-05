@@ -60,6 +60,18 @@ export type CreateTaskTemplate = { project_id: string | null, title: string, des
 
 export type UpdateTaskTemplate = { title: string | null, description: string | null, template_name: string | null, };
 
+export type TaskSpecStatus = "draft" | "review" | "approved" | "rejected";
+
+export type UserStory = { workflow: string, problem_solved: string, };
+
+export type TaskSpec = { id: string, task_id: string, overview: string, user_stories: string, scope: string, out_of_scope: string | null, deliverables: string, status: TaskSpecStatus, approved_by: string | null, approved_at: string | null, rejection_reason: string | null, created_at: string, updated_at: string, };
+
+export type CreateTaskSpec = { task_id: string, overview: string, user_stories: Array<UserStory>, scope: Array<string>, out_of_scope: string | null, deliverables: string, };
+
+export type UpdateTaskSpec = { overview: string | null, user_stories: Array<UserStory> | null, scope: Array<string> | null, out_of_scope: string | null, deliverables: string | null, };
+
+export type UpdateTaskSpecStatus = { status: TaskSpecStatus, approved_by: string | null, rejection_reason: string | null, };
+
 export type TaskAttemptStatus = "setuprunning" | "setupcomplete" | "setupfailed" | "executorrunning" | "executorcomplete" | "executorfailed";
 
 export type TaskAttempt = { id: string, task_id: string, worktree_path: string, branch: string, base_branch: string, merge_commit: string | null, executor: string | null, pr_url: string | null, pr_number: bigint | null, pr_status: string | null, pr_merged_at: string | null, worktree_deleted: boolean, setup_completed_at: string | null, created_at: string, updated_at: string, };

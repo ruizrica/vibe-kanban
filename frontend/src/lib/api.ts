@@ -7,6 +7,7 @@ import {
   CreateTask,
   CreateTaskAndStart,
   CreateTaskAttempt,
+  CreateTaskSpec,
   DeviceStartResponse,
   CreateTaskTemplate,
   DirectoryEntry,
@@ -21,10 +22,13 @@ import {
   TaskAttempt,
   TaskAttemptActivityWithPrompt,
   TaskAttemptState,
+  TaskSpec,
   TaskTemplate,
   TaskWithAttemptStatus,
   UpdateProject,
   UpdateTask,
+  UpdateTaskSpec,
+  UpdateTaskSpecStatus,
   UpdateTaskTemplate,
   WorktreeDiff,
 } from 'shared/types';
@@ -221,6 +225,71 @@ export const tasksApi = {
   delete: async (projectId: string, taskId: string): Promise<void> => {
     const response = await makeRequest(
       `/api/projects/${projectId}/tasks/${taskId}`,
+      {
+        method: 'DELETE',
+      }
+    );
+    return handleApiResponse<void>(response);
+  },
+};
+
+// Task Specs APIs
+export const specsApi = {
+  get: async (projectId: string, taskId: string): Promise<TaskSpec> => {
+    const response = await makeRequest(
+      `/api/projects/${projectId}/tasks/${taskId}/spec`
+    );
+    return handleApiResponse<TaskSpec>(response);
+  },
+
+  create: async (
+    projectId: string,
+    taskId: string,
+    data: CreateTaskSpec
+  ): Promise<TaskSpec> => {
+    const response = await makeRequest(
+      `/api/projects/${projectId}/tasks/${taskId}/spec`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
+    return handleApiResponse<TaskSpec>(response);
+  },
+
+  update: async (
+    projectId: string,
+    taskId: string,
+    data: UpdateTaskSpec
+  ): Promise<TaskSpec> => {
+    const response = await makeRequest(
+      `/api/projects/${projectId}/tasks/${taskId}/spec`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }
+    );
+    return handleApiResponse<TaskSpec>(response);
+  },
+
+  updateStatus: async (
+    projectId: string,
+    taskId: string,
+    data: UpdateTaskSpecStatus
+  ): Promise<TaskSpec> => {
+    const response = await makeRequest(
+      `/api/projects/${projectId}/tasks/${taskId}/spec/status`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
+    return handleApiResponse<TaskSpec>(response);
+  },
+
+  delete: async (projectId: string, taskId: string): Promise<void> => {
+    const response = await makeRequest(
+      `/api/projects/${projectId}/tasks/${taskId}/spec`,
       {
         method: 'DELETE',
       }

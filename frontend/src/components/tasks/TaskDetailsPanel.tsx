@@ -9,10 +9,12 @@ import {
 import type { TaskWithAttemptStatus } from 'shared/types';
 import DiffTab from '@/components/tasks/TaskDetails/DiffTab.tsx';
 import LogsTab from '@/components/tasks/TaskDetails/LogsTab.tsx';
+import SpecTab from '@/components/tasks/TaskDetails/SpecTab.tsx';
 import DeleteFileConfirmationDialog from '@/components/tasks/DeleteFileConfirmationDialog.tsx';
 import TabNavigation from '@/components/tasks/TaskDetails/TabNavigation.tsx';
 import CollapsibleToolbar from '@/components/tasks/TaskDetails/CollapsibleToolbar.tsx';
 import TaskDetailsProvider from '../context/TaskDetailsContextProvider.tsx';
+import { specsApi } from '@/lib/api';
 
 interface TaskDetailsPanelProps {
   task: TaskWithAttemptStatus | null;
@@ -34,18 +36,30 @@ export function TaskDetailsPanel({
   isDialogOpen = false,
 }: TaskDetailsPanelProps) {
   const [showEditorDialog, setShowEditorDialog] = useState(false);
+  const [hasSpec, setHasSpec] = useState(false);
 
   // Tab and collapsible state
-  const [activeTab, setActiveTab] = useState<'logs' | 'diffs'>('logs');
+  const [activeTab, setActiveTab] = useState<'logs' | 'diffs' | 'spec'>('logs');
   const [userSelectedTab, setUserSelectedTab] = useState<boolean>(false);
 
-  // Reset to logs tab when task changes
+  // Check if task has a spec
   useEffect(() => {
     if (task?.id) {
-      setActiveTab('logs');
+      specsApi
+        .get(projectId, task.id)
+        .then(() => setHasSpec(true))
+        .catch(() => setHasSpec(false));
+    }
+  }, [task?.id, projectId]);
+
+  // Reset to spec tab (if available) or logs tab when task changes
+  useEffect(() => {
+    if (task?.id) {
+      // Default to spec tab if it exists, otherwise logs
+      setActiveTab(hasSpec ? 'spec' : 'logs');
       setUserSelectedTab(true); // Treat this as a user selection to prevent auto-switching
     }
-  }, [task?.id]);
+  }, [task?.id, hasSpec]);
 
   // Handle ESC key locally to prevent global navigation
   useEffect(() => {
@@ -93,13 +107,14 @@ export function TaskDetailsPanel({
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 setUserSelectedTab={setUserSelectedTab}
+                hasSpec={hasSpec}
               />
 
               {/* Tab Content */}
               <div
-                className={`flex-1 flex flex-col min-h-0 ${activeTab === 'logs' ? 'p-4' : 'pt-4'}`}
+                className={`flex-1 flex flex-col min-h-0 ${activeTab === 'logs' ? 'p-4' : activeTab === 'spec' ? '' : 'pt-4'}`}
               >
-                {activeTab === 'diffs' ? <DiffTab /> : <LogsTab />}
+                {activeTab === 'diffs' ? <DiffTab /> : activeTab === 'spec' ? <SpecTab /> : <LogsTab />}
               </div>
 
               <TaskFollowUpSection />

@@ -3,10 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { FolderOpen, Plus, Settings, LibraryBig, Globe2 } from 'lucide-react';
+import { FolderOpen, Plus, Settings, LibraryBig, Globe2, FileText } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
-import { projectsApi, tasksApi, templatesApi } from '@/lib/api';
+import { projectsApi, tasksApi, templatesApi, specsApi } from '@/lib/api';
 import { TaskFormDialog } from '@/components/tasks/TaskFormDialog';
+import { SpecFormDialog } from '@/components/tasks/SpecFormDialog';
 import { ProjectForm } from '@/components/projects/project-form';
 import { TaskTemplateManager } from '@/components/TaskTemplateManager';
 import { useKeyboardShortcuts } from '@/lib/keyboard-shortcuts';
@@ -55,6 +56,7 @@ export function ProjectTasks() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+  const [isSpecDialogOpen, setIsSpecDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -209,6 +211,45 @@ export function ProjectTasks() {
     [projectId, fetchTasks]
   );
 
+  const handleCreateSpec = useCallback(
+    async (spec: {
+      title: string;
+      overview: string;
+      user_stories: { workflow: string; problem_solved: string }[];
+      scope: string[];
+      out_of_scope: string | null;
+      deliverables: string;
+    }) => {
+      try {
+        // First create the task
+        const createdTask = await tasksApi.create(projectId!, {
+          project_id: projectId!,
+          title: spec.title,
+          description: spec.overview,
+        });
+
+        // Then create the spec for that task
+        await specsApi.create(projectId!, createdTask.id, {
+          task_id: createdTask.id,
+          overview: spec.overview,
+          user_stories: spec.user_stories,
+          scope: spec.scope,
+          out_of_scope: spec.out_of_scope,
+          deliverables: spec.deliverables,
+        });
+
+        await fetchTasks();
+        // Open the newly created task in the details panel
+        navigate(`/projects/${projectId}/tasks/${createdTask.id}`, {
+          replace: true,
+        });
+      } catch (err) {
+        setError('Failed to create spec');
+      }
+    },
+    [projectId, fetchTasks, navigate]
+  );
+
   const handleUpdateTask = useCallback(
     async (title: string, description: string, status: TaskStatus) => {
       if (!editingTask) return;
@@ -311,8 +352,11 @@ export function ProjectTasks() {
     navigate,
     currentPath: `/projects/${projectId}/tasks`,
     hasOpenDialog:
-      isTaskDialogOpen || isTemplateManagerOpen || isProjectSettingsOpen,
-    closeDialog: () => setIsTaskDialogOpen(false),
+      isTaskDialogOpen || isSpecDialogOpen || isTemplateManagerOpen || isProjectSettingsOpen,
+    closeDialog: () => {
+      setIsTaskDialogOpen(false);
+      setIsSpecDialogOpen(false);
+    },
     onC: handleCreateNewTask,
   });
 
@@ -403,6 +447,14 @@ export function ProjectTasks() {
             <Button onClick={handleCreateNewTask}>
               <Plus className="h-4 w-4 mr-2" />
               Add Task
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsSpecDialogOpen(true)}
+              title="Create Task with Specification (Agent OS)"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Create Spec
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -529,6 +581,13 @@ export function ProjectTasks() {
         onCreateAndStartTask={handleCreateAndStartTask}
         onUpdateTask={handleUpdateTask}
         initialTemplate={selectedTemplate}
+      />
+
+      <SpecFormDialog
+        isOpen={isSpecDialogOpen}
+        onOpenChange={setIsSpecDialogOpen}
+        projectId={projectId!}
+        onCreateSpec={handleCreateSpec}
       />
 
       <ProjectForm
