@@ -256,7 +256,9 @@ export function ProjectTasks() {
             );
           }
         }
-        setError('Failed to create spec');
+        // Set a more specific error message
+        const errorMessage = err instanceof Error ? err.message : 'Failed to create spec';
+        setError(errorMessage);
         throw err; // Rethrow so the dialog can stay open and show the error
       }
     },

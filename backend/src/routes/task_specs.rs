@@ -164,8 +164,11 @@ pub async fn update_task_spec(
 /// # Security Note
 /// Currently, this endpoint accepts `approved_by` from the client request body.
 /// This is a security issue as any client can claim approval from an arbitrary person.
-/// TODO: Once authentication is implemented, derive `approved_by` from the authenticated
-/// user/session on the server and ignore the client-provided value.
+/// 
+/// TODO: Once authentication is implemented:
+/// 1. Derive `approved_by` from the authenticated user/session on the server
+/// 2. Ignore or reject the client-provided `approved_by` value
+/// 3. Consider adding validation to ensure only authorized users can approve specs
 pub async fn update_task_spec_status(
     State(state): State<AppState>,
     Path((project_id, task_id)): Path<(Uuid, Uuid)>,
