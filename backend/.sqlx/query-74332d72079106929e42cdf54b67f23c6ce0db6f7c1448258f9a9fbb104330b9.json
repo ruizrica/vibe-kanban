@@ -1,6 +1,6 @@
 {
   "db_name": "SQLite",
-  "query": "SELECT\n                id as \"id!: Uuid\",\n                task_id as \"task_id!: Uuid\",\n                overview,\n                user_stories,\n                scope,\n                out_of_scope,\n                deliverables,\n                status as \"status!: TaskSpecStatus\",\n                approved_by,\n                approved_at as \"approved_at: DateTime<Utc>\",\n                rejection_reason,\n                created_at as \"created_at!: DateTime<Utc>\",\n                updated_at as \"updated_at!: DateTime<Utc>\"\n            FROM task_specs\n            WHERE id = $1",
+  "query": "INSERT INTO task_specs (\n                id, task_id, overview, user_stories, scope,\n                out_of_scope, deliverables, status\n            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\n            RETURNING\n                id as \"id!: Uuid\",\n                task_id as \"task_id!: Uuid\",\n                overview,\n                user_stories,\n                scope,\n                out_of_scope,\n                deliverables,\n                status as \"status!: TaskSpecStatus\",\n                approved_by,\n                approved_at as \"approved_at?: DateTime<Utc>\",\n                rejection_reason,\n                created_at as \"created_at!: DateTime<Utc>\",\n                updated_at as \"updated_at!: DateTime<Utc>\"",
   "describe": {
     "columns": [
       {
@@ -49,7 +49,7 @@
         "type_info": "Text"
       },
       {
-        "name": "approved_at: DateTime<Utc>",
+        "name": "approved_at?: DateTime<Utc>",
         "ordinal": 9,
         "type_info": "Text"
       },
@@ -70,10 +70,10 @@
       }
     ],
     "parameters": {
-      "Right": 1
+      "Right": 8
     },
     "nullable": [
-      true,
+      false,
       false,
       false,
       false,
@@ -88,5 +88,5 @@
       false
     ]
   },
-  "hash": "0957f6d9ee4326bbb6a94476d06efbc2794f2dca152169d9ee46c832537c3ca6"
+  "hash": "74332d72079106929e42cdf54b67f23c6ce0db6f7c1448258f9a9fbb104330b9"
 }

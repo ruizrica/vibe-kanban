@@ -44,12 +44,25 @@ export function TaskDetailsPanel({
 
   // Check if task has a spec
   useEffect(() => {
-    if (task?.id) {
-      specsApi
-        .get(projectId, task.id)
-        .then(() => setHasSpec(true))
-        .catch(() => setHasSpec(false));
+    if (!task?.id) {
+      setHasSpec(false);
+      return;
     }
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        await specsApi.get(projectId, task.id);
+        if (!cancelled) setHasSpec(true);
+      } catch {
+        if (!cancelled) setHasSpec(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [task?.id, projectId]);
 
   // Reset to spec tab (if available) or logs tab when task changes

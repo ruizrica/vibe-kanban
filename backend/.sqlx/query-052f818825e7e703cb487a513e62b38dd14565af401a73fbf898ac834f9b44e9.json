@@ -1,6 +1,6 @@
 {
   "db_name": "SQLite",
-  "query": "SELECT\n                id as \"id!: Uuid\",\n                task_id as \"task_id!: Uuid\",\n                overview,\n                user_stories,\n                scope,\n                out_of_scope,\n                deliverables,\n                status as \"status!: TaskSpecStatus\",\n                approved_by,\n                approved_at as \"approved_at: DateTime<Utc>\",\n                rejection_reason,\n                created_at as \"created_at!: DateTime<Utc>\",\n                updated_at as \"updated_at!: DateTime<Utc>\"\n            FROM task_specs\n            WHERE task_id = $1",
+  "query": "UPDATE task_specs\n            SET overview = $2,\n                user_stories = $3,\n                scope = $4,\n                out_of_scope = $5,\n                deliverables = $6,\n                updated_at = CURRENT_TIMESTAMP\n            WHERE id = $1\n            RETURNING\n                id as \"id!: Uuid\",\n                task_id as \"task_id!: Uuid\",\n                overview,\n                user_stories,\n                scope,\n                out_of_scope,\n                deliverables,\n                status as \"status!: TaskSpecStatus\",\n                approved_by,\n                approved_at as \"approved_at?: DateTime<Utc>\",\n                rejection_reason,\n                created_at as \"created_at!: DateTime<Utc>\",\n                updated_at as \"updated_at!: DateTime<Utc>\"",
   "describe": {
     "columns": [
       {
@@ -49,7 +49,7 @@
         "type_info": "Text"
       },
       {
-        "name": "approved_at: DateTime<Utc>",
+        "name": "approved_at?: DateTime<Utc>",
         "ordinal": 9,
         "type_info": "Text"
       },
@@ -70,10 +70,10 @@
       }
     ],
     "parameters": {
-      "Right": 1
+      "Right": 6
     },
     "nullable": [
-      true,
+      false,
       false,
       false,
       false,
@@ -88,5 +88,5 @@
       false
     ]
   },
-  "hash": "defecc183bb75d76ef6b3dd8766d89e60eb10d4c0809ada804b3ce89257b7538"
+  "hash": "052f818825e7e703cb487a513e62b38dd14565af401a73fbf898ac834f9b44e9"
 }
