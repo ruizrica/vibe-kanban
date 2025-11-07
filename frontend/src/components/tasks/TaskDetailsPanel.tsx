@@ -49,12 +49,11 @@ export function TaskDetailsPanel({
       return;
     }
 
-    const taskId = task.id;
     let cancelled = false;
 
     (async () => {
       try {
-        await specsApi.get(projectId, taskId);
+        await specsApi.get(projectId, task.id);
         if (!cancelled) setHasSpec(true);
       } catch {
         if (!cancelled) setHasSpec(false);
