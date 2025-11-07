@@ -255,7 +255,7 @@ export function SpecViewer({
       )}
 
       {/* Action Buttons */}
-      {spec.status === 'draft' || spec.status === 'review' ? (
+      {spec.status !== 'approved' ? (
         <div className="space-y-3 pt-4 border-t">
           {!showRejectionInput ? (
             <div className="flex gap-2">
@@ -269,29 +269,33 @@ export function SpecViewer({
                   Edit
                 </Button>
               )}
-              <Button
-                variant="outline"
-                onClick={() => setShowRejectionInput(true)}
-                disabled={isApproving || isRejecting}
-                className="text-red-600 hover:text-red-700"
-              >
-                <XCircle className="h-4 w-4 mr-2" />
-                Reject
-              </Button>
-              <Button
-                onClick={handleApprove}
-                disabled={isApproving || isRejecting}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                {isApproving ? (
-                  'Approving...'
-                ) : (
-                  <>
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    Approve
-                  </>
-                )}
-              </Button>
+              {spec.status === 'review' && (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowRejectionInput(true)}
+                    disabled={isApproving || isRejecting}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Reject
+                  </Button>
+                  <Button
+                    onClick={handleApprove}
+                    disabled={isApproving || isRejecting}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    {isApproving ? (
+                      'Approving...'
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Approve
+                      </>
+                    )}
+                  </Button>
+                </>
+              )}
             </div>
           ) : (
             <div className="space-y-3">

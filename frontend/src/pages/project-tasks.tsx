@@ -220,9 +220,10 @@ export function ProjectTasks() {
       out_of_scope: string | null;
       deliverables: string;
     }) => {
+      let createdTask: Task | null = null;
       try {
         // First create the task
-        const createdTask = await tasksApi.create(projectId!, {
+        createdTask = await tasksApi.create(projectId!, {
           project_id: projectId!,
           title: spec.title,
           description: spec.overview,
@@ -244,7 +245,19 @@ export function ProjectTasks() {
           replace: true,
         });
       } catch (err) {
+        // If spec creation fails, rollback the task creation
+        if (createdTask) {
+          try {
+            await tasksApi.delete(projectId!, createdTask.id);
+          } catch (cleanupError) {
+            console.error(
+              'Failed to rollback task after spec creation error:',
+              cleanupError
+            );
+          }
+        }
         setError('Failed to create spec');
+        throw err; // Rethrow so the dialog can stay open and show the error
       }
     },
     [projectId, fetchTasks, navigate]

@@ -2,7 +2,7 @@
 -- Following the Agent OS specification format
 
 CREATE TABLE task_specs (
-    id              BLOB PRIMARY KEY,
+    id              BLOB PRIMARY KEY NOT NULL,
     task_id         BLOB NOT NULL UNIQUE,
 
     -- Spec content following Agent OS format

@@ -1,6 +1,6 @@
 {
   "db_name": "SQLite",
-  "query": "INSERT INTO task_specs (\n                id, task_id, overview, user_stories, scope,\n                out_of_scope, deliverables, status\n            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\n            RETURNING\n                id as \"id!: Uuid\",\n                task_id as \"task_id!: Uuid\",\n                overview,\n                user_stories,\n                scope,\n                out_of_scope,\n                deliverables,\n                status as \"status!: TaskSpecStatus\",\n                approved_by,\n                approved_at as \"approved_at: DateTime<Utc>\",\n                rejection_reason,\n                created_at as \"created_at!: DateTime<Utc>\",\n                updated_at as \"updated_at!: DateTime<Utc>\"",
+  "query": "SELECT\n                id as \"id!: Uuid\",\n                task_id as \"task_id!: Uuid\",\n                overview,\n                user_stories,\n                scope,\n                out_of_scope,\n                deliverables,\n                status as \"status!: TaskSpecStatus\",\n                approved_by,\n                approved_at as \"approved_at?: DateTime<Utc>\",\n                rejection_reason,\n                created_at as \"created_at!: DateTime<Utc>\",\n                updated_at as \"updated_at!: DateTime<Utc>\"\n            FROM task_specs\n            WHERE task_id = $1",
   "describe": {
     "columns": [
       {
@@ -49,7 +49,7 @@
         "type_info": "Text"
       },
       {
-        "name": "approved_at: DateTime<Utc>",
+        "name": "approved_at?: DateTime<Utc>",
         "ordinal": 9,
         "type_info": "Text"
       },
@@ -70,10 +70,10 @@
       }
     ],
     "parameters": {
-      "Right": 8
+      "Right": 1
     },
     "nullable": [
-      true,
+      false,
       false,
       false,
       false,
@@ -88,5 +88,5 @@
       false
     ]
   },
-  "hash": "f11229e74727caad982bd99dc5b0f7729e2ee01a9955c94cc36b86513a47997d"
+  "hash": "b67d69ca890fb1f6330fed5a71c42f2029153f3a13615abae6e62b3c3774e522"
 }
